@@ -790,9 +790,8 @@
     onReady(() => {
         if (prefersReducedMotion) return;
 
-        const portrait = $('.hero__portrait-img');
         const shapes = $$('.hero__parallax-shape');
-        if (!portrait && shapes.length === 0) return;
+        if (shapes.length === 0) return;
 
         const update = () => {
             const scrollY = window.scrollY;
@@ -800,12 +799,6 @@
             if (scrollY > heroH * 1.2) return;
 
             const progress = Math.min(scrollY / heroH, 1);
-
-            if (portrait) {
-                const y = scrollY * 0.3;
-                const scale = 1.08 - progress * 0.04;
-                portrait.style.transform = `translate3d(0, ${y}px, 0) scale(${scale})`;
-            }
 
             shapes.forEach((shape, i) => {
                 const speed = 0.15 + (i * 0.08);
