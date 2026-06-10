@@ -385,9 +385,12 @@
         if (!lightbox || !imageEl) return;
 
         // Build a global gallery: every project-card gallery on the page.
+        // Use data-full-src if available, otherwise fall back to currentSrc/src.
+        // Track by index to handle duplicate src values.
         const allItems = $$('[data-gallery] img').map((img) => ({
-            src: img.currentSrc || img.src,
-            alt: img.alt || ''
+            src: img.getAttribute('data-full-src') || img.currentSrc || img.src,
+            alt: img.alt || '',
+            _el: img
         }));
 
         if (allItems.length === 0) return;
@@ -397,6 +400,7 @@
 
         const render = () => {
             const item = allItems[currentIndex];
+            if (!item) return;
             imageEl.src = item.src;
             imageEl.alt = item.alt;
             captionEl.textContent = item.alt;
@@ -435,15 +439,16 @@
             render();
         };
 
-        // Wire up triggers
-        $$('[data-gallery] img').forEach((img) => {
+        // Wire up triggers — use index directly to handle duplicate src values
+        const galleryImgs = $$('[data-gallery] img');
+        galleryImgs.forEach((img, idx) => {
             img.setAttribute('tabindex', '0');
             img.setAttribute('role', 'button');
             img.setAttribute('aria-label', 'View image: ' + (img.alt || 'project image'));
 
             const handler = () => {
-                const fullSrc = img.currentSrc || img.src;
-                const index = allItems.findIndex((i) => i.src === fullSrc);
+                // Match by element reference, not src string
+                const index = allItems.findIndex((i) => i._el === img);
                 if (index >= 0) open(index, img);
             };
 
@@ -551,15 +556,21 @@
             return;
         }
 
-        // Wait for fonts + a minimum display time + the hero portrait decode
+        // Wait for fonts + a minimum display time + hero images decode
         const minTime = new Promise((r) => setTimeout(r, 1400));
         const fontsReady = document.fonts ? document.fonts.ready : Promise.resolve();
-        const portrait = $('.hero__portrait-img');
-        const portraitReady = (portrait && typeof portrait.decode === 'function')
-            ? portrait.decode().catch(() => {})
-            : Promise.resolve();
+        const heroImgs = $$('#heroPhotos img, .about__photo');
+        const imagesReady = Promise.all(
+            heroImgs.map((img) => {
+                if (img.complete) return Promise.resolve();
+                return new Promise((res) => {
+                    img.addEventListener('load', res, { once: true });
+                    img.addEventListener('error', res, { once: true });
+                });
+            })
+        );
 
-        Promise.all([minTime, fontsReady, portraitReady]).then(hide);
+        Promise.all([minTime, fontsReady, imagesReady]).then(hide);
 
         // Safety fallback
         setTimeout(hide, 4000);
