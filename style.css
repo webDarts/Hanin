@@ -666,15 +666,17 @@ img {
 
 .about__grid {
     display: grid;
-    grid-template-columns: 1fr 1.5fr;
+    grid-template-columns: 380px 1fr;
     gap: var(--space-xl);
     align-items: start;
 }
 
 .about__photo {
     width: 100%;
-    aspect-ratio: 3 / 4;
+    max-height: 480px;
+    aspect-ratio: 4 / 5;
     object-fit: cover;
+    object-position: center 15%;
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-md);
     transition: transform var(--transition-slow), box-shadow var(--transition);
@@ -1614,6 +1616,10 @@ a.contact__item:hover .contact__value {
    ============================================ */
 
 @media (max-width: 1024px) {
+    .about__grid {
+        grid-template-columns: 300px 1fr;
+    }
+
     .skills__grid {
         grid-template-columns: 1fr 1fr;
     }
@@ -1691,6 +1697,7 @@ a.contact__item:hover .contact__value {
 
     .about__photo {
         max-width: 280px;
+        max-height: 360px;
         margin: 0 auto;
     }
 
