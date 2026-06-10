@@ -103,8 +103,7 @@
             img.src = src;
             img.alt = '';
             img.draggable = false;
-            img.style.animation = 'heroSlideshow ' + totalDuration + 's ease-in-out infinite';
-            img.style.animationDelay = '-' + (i * perSlide) + 's';
+            img.style.animation = 'heroSlideshow ' + totalDuration + 's ease-in-out ' + (-(i * perSlide)) + 's infinite';
             photoGrid.appendChild(img);
         });
     });
