@@ -161,12 +161,13 @@
 }
 
 [data-theme="dark"] .marquee-band {
-    border-top-color: rgba(255, 255, 255, 0.08);
-    border-bottom-color: rgba(255, 255, 255, 0.08);
+    background: #1A1614;
+    border-top-color: rgba(255, 255, 255, 0.12);
+    border-bottom-color: rgba(255, 255, 255, 0.12);
 }
 
 [data-theme="dark"] .marquee-band__item {
-    color: rgba(255, 255, 255, 0.18);
+    color: rgba(255, 255, 255, 0.35);
 }
 
 /* ============================================
