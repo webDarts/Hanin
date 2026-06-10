@@ -85,7 +85,7 @@
 
     onReady(() => {
         const photoGrid = $('#heroPhotos');
-        if (!photoGrid || prefersReducedMotion) return;
+        if (!photoGrid) return;
 
         const slides = [
             'BG/DSC06450.jpg',

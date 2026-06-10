@@ -1680,6 +1680,10 @@ a.contact__item:hover .contact__value {
         padding-bottom: var(--space-xl);
     }
 
+    .hero__photos {
+        padding-top: var(--nav-height);
+    }
+
     .about__grid {
         grid-template-columns: 1fr;
         gap: var(--space-lg);
@@ -1783,6 +1787,11 @@ a.contact__item:hover .contact__value {
     }
 
     .project-card__gallery > * {
+        opacity: 1;
+        animation: none;
+    }
+
+    .hero__photos img {
         opacity: 1;
         animation: none;
     }
