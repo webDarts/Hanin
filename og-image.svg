@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="Hanin AbuAtieh — Visual Designer Portfolio">
+    <defs>
+        <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#FDF6EC"/>
+            <stop offset="0.55" stop-color="#E8D5B7"/>
+            <stop offset="1" stop-color="#D4785C"/>
+        </linearGradient>
+        <radialGradient id="orb1" cx="0.85" cy="0.15" r="0.6">
+            <stop offset="0" stop-color="#C75B39" stop-opacity="0.22"/>
+            <stop offset="1" stop-color="#C75B39" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="orb2" cx="0.1" cy="0.85" r="0.5">
+            <stop offset="0" stop-color="#8B6914" stop-opacity="0.18"/>
+            <stop offset="1" stop-color="#8B6914" stop-opacity="0"/>
+        </radialGradient>
+    </defs>
+
+    <rect width="1200" height="630" fill="url(#bg)"/>
+    <rect width="1200" height="630" fill="url(#orb1)"/>
+    <rect width="1200" height="630" fill="url(#orb2)"/>
+
+    <g font-family="Georgia, 'Playfair Display', serif" fill="#2D2926">
+        <text x="80" y="120" font-size="22" font-weight="500" letter-spacing="6" fill="#C75B39" font-family="Inter, sans-serif">DESIGN PORTFOLIO 2025</text>
+        <text x="80" y="290" font-size="148" font-weight="900" letter-spacing="-2">Hanin</text>
+        <text x="80" y="430" font-size="148" font-weight="900" font-style="italic" letter-spacing="-2">AbuAtieh</text>
+        <text x="80" y="500" font-size="32" font-weight="300" fill="#7A7067" font-family="Inter, sans-serif">Visual Designer — Amman, Jordan</text>
+    </g>
+
+    <g transform="translate(900, 470)" font-family="Inter, sans-serif" font-size="20" fill="#3A3632">
+        <text x="0" y="0">Fashion</text>
+        <text x="115" y="0">·</text>
+        <text x="135" y="0">Packaging</text>
+        <text x="285" y="0">·</text>
+        <text x="305" y="0" y="0">Product</text>
+    </g>
+
+    <g transform="translate(1120, 540)">
+        <circle r="22" fill="#C75B39"/>
+    </g>
+</svg>

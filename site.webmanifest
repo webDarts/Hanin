@@ -1,0 +1,26 @@
+{
+    "name": "Hanin AbuAtieh — Visual Designer",
+    "short_name": "Hanin A. Atieh",
+    "description": "Visual Designer portfolio — Fashion, Packaging, Product, Typography, and Arabic Calligraphy.",
+    "start_url": "./",
+    "scope": "./",
+    "display": "standalone",
+    "orientation": "portrait-primary",
+    "background_color": "#FDF6EC",
+    "theme_color": "#FDF6EC",
+    "lang": "en",
+    "icons": [
+        {
+            "src": "favicon.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "any"
+        },
+        {
+            "src": "apple-touch-icon.svg",
+            "sizes": "180x180",
+            "type": "image/svg+xml",
+            "purpose": "any"
+        }
+    ]
+}
