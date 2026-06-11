@@ -326,6 +326,7 @@ img {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: var(--space-xs);
     padding: var(--space-sm) var(--space-md);
     background: rgba(253, 246, 236, 0.85);
     backdrop-filter: blur(12px) saturate(180%);
@@ -457,9 +458,9 @@ img {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
-    background: none;
+    width: 44px;
+    height: 44px;
+    background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: 50%;
     cursor: pointer;
@@ -467,12 +468,19 @@ img {
     transition: background var(--transition), color var(--transition), border-color var(--transition), transform var(--transition);
     flex-shrink: 0;
     position: relative;
+    z-index: 1003;
+    -webkit-tap-highlight-color: transparent;
 }
 
-.theme-toggle:hover {
+.theme-toggle:hover,
+.theme-toggle:active {
     background: var(--color-secondary);
     color: var(--color-dark);
     transform: rotate(12deg);
+}
+
+.theme-toggle:active {
+    transform: scale(0.9);
 }
 
 .theme-toggle__icon {
@@ -517,7 +525,7 @@ img {
     height: 100vh;
     height: 100svh;
     overflow: hidden;
-    background: #000;
+    background: #000 url('BG/hero.jpg') center center / cover no-repeat;
     color: var(--color-white);
 }
 
@@ -537,6 +545,10 @@ img {
     display: block;
     filter: brightness(0.78) saturate(1.58) contrast(1.03);
     opacity: 0;
+}
+
+.hero__photos img:first-child {
+    opacity: 1;
 }
 
 @keyframes heroSlideshow {

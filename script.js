@@ -59,8 +59,11 @@
 
         const applyTheme = (theme) => {
             html.setAttribute('data-theme', theme);
+            // Also set a class for broader CSS compatibility
+            html.classList.toggle('is-dark', theme === 'dark');
             toggle.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
             toggle.setAttribute('title', theme === 'dark' ? 'Light mode' : 'Dark mode');
+            toggle.setAttribute('data-theme', theme);
             try { localStorage.setItem(STORAGE_KEY, theme); } catch {}
         };
 
@@ -97,15 +100,30 @@
 
         const totalDuration = 25;
         const perSlide = totalDuration / slides.length;
+        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
         slides.forEach((src, i) => {
             const img = document.createElement('img');
             img.src = src;
             img.alt = '';
             img.draggable = false;
-            img.style.animation = 'heroSlideshow ' + totalDuration + 's ease-in-out ' + (-(i * perSlide)) + 's infinite';
+            if (reducedMotion) {
+                // Show only the first image statically when reduced motion is preferred
+                img.style.opacity = i === 0 ? '1' : '0';
+            } else {
+                img.style.animation = 'heroSlideshow ' + totalDuration + 's ease-in-out ' + (-(i * perSlide)) + 's infinite';
+            }
             photoGrid.appendChild(img);
         });
+
+        // Fallback: if after 3 seconds no animation has started (e.g. images failed to load),
+        // ensure at least the first image is visible
+        setTimeout(() => {
+            const firstImg = photoGrid.querySelector('img:first-child');
+            if (firstImg && getComputedStyle(firstImg).opacity === '0') {
+                firstImg.style.opacity = '1';
+            }
+        }, 3000);
     });
 
     /* ------------------------------------------------
