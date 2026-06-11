@@ -522,9 +522,9 @@ img {
     width: 110%;
     height: 110%;
     object-fit: cover;
-    object-position: center 35%;
+    object-position: center 40%;
     display: block;
-    filter: brightness(0.98) saturate(1.08) contrast(1.03);
+    filter: brightness(0.78) saturate(1.58) contrast(1.03);
     opacity: 0;
 }
 
