@@ -519,10 +519,10 @@ img {
 .hero__photos img {
     position: absolute;
     inset: 0;
-    width: 70%;
-    height: 70%;
+    width: 110%;
+    height: 110%;
     object-fit: cover;
-    object-position: center center;
+    object-position: center 35%;
     display: block;
     filter: brightness(0.98) saturate(1.08) contrast(1.03);
     opacity: 0;
