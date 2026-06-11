@@ -1,22 +1,22 @@
 /* ============================================
    DESIGN SYSTEM — Hanin AbuAtieh Portfolio
-   Editorial Layout | Warm Earth Tones
+   Neutral Monochrome | Phantom Black / Gray
    ============================================ */
 
 :root {
-    --color-primary: #C75B39;
-    --color-primary-light: #D4785C;
-    --color-secondary: #E8D5B7;
-    --color-background: #FDF6EC;
-    --color-dark: #2D2926;
-    --color-accent: #8B6914;
-    --color-text: #3A3632;
-    --color-text-light: #7A7067;
+    --color-primary: #4A4A4A;
+    --color-primary-light: #777777;
+    --color-secondary: #D8D8D8;
+    --color-background: #E5E5E5;
+    --color-dark: #111111;
+    --color-accent: #8A8A8A;
+    --color-text: #2A2A2A;
+    --color-text-light: #5F5F5F;
     --color-white: #FFFFFF;
 
-    --color-surface: #FFFFFF;
-    --color-border: rgba(45, 41, 38, 0.10);
-    --color-border-strong: rgba(45, 41, 38, 0.18);
+    --color-surface: #F7F7F7;
+    --color-border: rgba(17, 17, 17, 0.12);
+    --color-border-strong: rgba(17, 17, 17, 0.22);
 
     --font-heading: 'Playfair Display', Georgia, serif;
     --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -41,19 +41,19 @@
 }
 
 [data-theme="dark"] {
-    --color-primary: #D4785C;
-    --color-primary-light: #E8927A;
-    --color-secondary: #3A3430;
-    --color-background: #1A1614;
-    --color-dark: #EDE6DF;
-    --color-accent: #C4A04A;
-    --color-text: #D4CEC8;
-    --color-text-light: #8A827A;
-    --color-white: #1A1614;
+    --color-primary: #B8B8B8;
+    --color-primary-light: #D6D6D6;
+    --color-secondary: #111111;
+    --color-background: #050505;
+    --color-dark: #F2F2F2;
+    --color-accent: #9A9A9A;
+    --color-text: #E8E8E8;
+    --color-text-light: #A6A6A6;
+    --color-white: #050505;
 
-    --color-surface: #25201D;
-    --color-border: rgba(237, 230, 223, 0.08);
-    --color-border-strong: rgba(237, 230, 223, 0.15);
+    --color-surface: #0A0A0A;
+    --color-border: rgba(242, 242, 242, 0.10);
+    --color-border-strong: rgba(242, 242, 242, 0.18);
 
     --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.25);
     --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.35);
@@ -79,7 +79,7 @@
 
 [data-theme="dark"] .hero__cta--ghost:hover {
     background: #fff;
-    color: #1A1614;
+    color: #050505;
 }
 
 [data-theme="dark"] .hero__scroll-hint {
@@ -95,11 +95,11 @@
 }
 
 [data-theme="dark"] .skills {
-    background: #1A1614;
+    background: #050505;
 }
 
 [data-theme="dark"] .skills .section__title {
-    color: #EDE6DF;
+    color: #F2F2F2;
 }
 
 [data-theme="dark"] .skill-card {
@@ -122,11 +122,11 @@
 }
 
 [data-theme="dark"] .contact {
-    background: #1A1614;
+    background: #050505;
 }
 
 [data-theme="dark"] .contact .section__title {
-    color: #EDE6DF;
+    color: #F2F2F2;
 }
 
 [data-theme="dark"] .contact__lead {
@@ -161,7 +161,7 @@
 }
 
 [data-theme="dark"] .marquee-band {
-    background: #1A1614;
+    background: #050505;
     border-top-color: rgba(255, 255, 255, 0.12);
     border-bottom-color: rgba(255, 255, 255, 0.12);
 }
@@ -217,7 +217,7 @@ img {
    FOCUS (a11y)
    ============================================ */
 
-:focus {
+:focus:not(:focus-visible) {
     outline: none;
 }
 
@@ -384,6 +384,28 @@ img {
     color: var(--color-primary);
 }
 
+.nav__cv {
+    padding: 0.35rem 0.9rem;
+    border: 1px solid var(--color-primary);
+    border-radius: 999px;
+    color: var(--color-primary) !important;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    transition: background var(--transition), color var(--transition), transform var(--transition);
+}
+
+.nav__cv:hover,
+.nav__cv:focus-visible {
+    background: var(--color-primary);
+    color: var(--color-white) !important;
+    transform: translateY(-1px);
+}
+
+.nav__cv::after {
+    display: none;
+}
+
 .nav__toggle {
     display: none;
     flex-direction: column;
@@ -500,8 +522,9 @@ img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center top;
+    object-position: center center;
     display: block;
+    filter: brightness(0.88) saturate(1.08) contrast(1.03);
     opacity: 0;
 }
 
@@ -536,16 +559,16 @@ img {
     pointer-events: none;
     background:
         linear-gradient(180deg,
-            rgba(10, 8, 6, 0.50) 0%,
-            rgba(10, 8, 6, 0.08) 30%,
-            rgba(10, 8, 6, 0.40) 55%,
-            rgba(10, 8, 6, 0.95) 80%,
-            #000 100%
+            rgba(10, 8, 6, 0.72) 0%,
+            rgba(10, 8, 6, 0.38) 35%,
+            rgba(10, 8, 6, 0.55) 62%,
+            rgba(10, 8, 6, 0.96) 100%
         ),
+        radial-gradient(circle at 50% 42%, rgba(10, 8, 6, 0.18) 0%, rgba(10, 8, 6, 0.55) 55%, rgba(10, 8, 6, 0.82) 100%),
         linear-gradient(90deg,
-            rgba(10, 8, 6, 0.40) 0%,
-            rgba(10, 8, 6, 0.10) 50%,
-            rgba(10, 8, 6, 0.00) 100%
+            rgba(10, 8, 6, 0.58) 0%,
+            rgba(10, 8, 6, 0.24) 48%,
+            rgba(10, 8, 6, 0.18) 100%
         );
 }
 
@@ -1104,23 +1127,25 @@ img {
 
 .project-card__gallery {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr;
-    gap: var(--space-sm);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-xs);
     margin-top: var(--space-md);
-    margin-inline: calc(-1 * var(--space-md));
-    padding-inline: var(--space-md);
 }
 
-.project-card__gallery > * {
-    width: 100%;
+.project-card__gallery > picture,
+.project-card__gallery > img {
+    display: block;
     border-radius: var(--radius);
     overflow: hidden;
     cursor: zoom-in;
     background: var(--color-secondary);
+    min-height: 120px;
+    aspect-ratio: 4 / 3;
     transition: transform var(--transition), box-shadow var(--transition);
 }
 
-.project-card__gallery > *:hover {
+.project-card__gallery > picture:hover,
+.project-card__gallery > img:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
 }
@@ -1128,91 +1153,34 @@ img {
 .project-card__gallery img {
     width: 100%;
     height: 100%;
+    min-height: 120px;
+    aspect-ratio: 4 / 3;
     object-fit: cover;
     display: block;
-    transition: transform var(--transition-slow);
 }
 
 .project-card__gallery picture {
-    display: contents;
+    display: block;
 }
 
-.project-card__gallery > *:hover img {
-    transform: scale(1.06);
+.project-card__gallery picture:hover img {
+    transform: scale(1.04);
 }
 
-.project-card__gallery > :nth-child(2) {
-    grid-row: span 2;
-}
-
-.project-card__gallery > :nth-child(4) {
-    grid-column: 1;
-    grid-row: span 2;
-}
-
-.project-card__gallery > :nth-child(6) {
-    grid-column: 3;
-    grid-row: span 2;
-}
-
-.project-card__gallery > :nth-child(5) {
-    grid-column: 2;
-}
-
-.project-card__gallery > :nth-child(3) {
-    grid-column: 3;
-}
-
-.project-card__gallery > :nth-child(7) {
-    grid-column: 1;
-}
-
-/* Staggered reveal — uses individual translate property to avoid
-   conflicting with hover transform */
-@keyframes galleryReveal {
-    from { opacity: 0; translate: 0 12px; }
-    to { opacity: 1; translate: 0 0; }
-}
-
-.project-card__gallery > * {
-    opacity: 0;
-    animation: galleryReveal 0.5s ease forwards;
-}
-
-.project-card__gallery > :nth-child(1) { animation-delay: 0s; }
-.project-card__gallery > :nth-child(2) { animation-delay: 0.08s; }
-.project-card__gallery > :nth-child(3) { animation-delay: 0.16s; }
-.project-card__gallery > :nth-child(4) { animation-delay: 0.24s; }
-.project-card__gallery > :nth-child(5) { animation-delay: 0.32s; }
-.project-card__gallery > :nth-child(6) { animation-delay: 0.40s; }
-.project-card__gallery > :nth-child(7) { animation-delay: 0.48s; }
-.project-card__gallery > :nth-child(8) { animation-delay: 0.56s; }
-.project-card__gallery > :nth-child(9) { animation-delay: 0.64s; }
-.project-card__gallery > :nth-child(10) { animation-delay: 0.72s; }
-
-@media (max-width: 640px) {
+@media (max-width: 1024px) {
     .project-card__gallery {
-        grid-template-columns: repeat(2, 1fr);
-        gap: var(--space-xs);
-        margin-inline: 0;
-        padding-inline: 0;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-    .project-card__gallery > * {
+}
+
+@media (max-width: 480px) {
+    .project-card__gallery {
+        grid-template-columns: 1fr;
+    }
+
+    .project-card__gallery > picture,
+    .project-card__gallery > img {
         min-height: 160px;
-    }
-    .project-card__gallery > :nth-child(2),
-    .project-card__gallery > :nth-child(4),
-    .project-card__gallery > :nth-child(6) {
-        grid-row: auto;
-    }
-    .project-card__gallery > :nth-child(4),
-    .project-card__gallery > :nth-child(6) {
-        grid-column: auto;
-    }
-    .project-card__gallery > :nth-child(5),
-    .project-card__gallery > :nth-child(3),
-    .project-card__gallery > :nth-child(7) {
-        grid-column: auto;
     }
 }
 
@@ -1251,6 +1219,13 @@ img {
     font-size: 1.05rem;
     color: rgba(255, 255, 255, 0.7);
     max-width: 60ch;
+    margin-bottom: var(--space-md);
+}
+
+.cv-download {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
     margin-bottom: var(--space-lg);
 }
 
@@ -1644,7 +1619,8 @@ a.contact__item:hover .contact__value {
     .nav__links {
         position: fixed;
         top: 0;
-        right: -100%;
+        transform: translateX(100%);
+        visibility: hidden;
         width: 280px;
         max-width: 85vw;
         height: 100vh;
@@ -1654,12 +1630,13 @@ a.contact__item:hover .contact__value {
         background: var(--color-background);
         padding: 5rem var(--space-lg) var(--space-lg);
         gap: var(--space-md);
-        transition: right var(--transition);
+        transition: transform var(--transition), visibility var(--transition);
         box-shadow: -4px 0 30px rgba(0, 0, 0, 0.1);
     }
 
     .nav__links--open {
-        right: 0;
+        transform: translateX(0);
+        visibility: visible;
     }
 
     .nav__links a {
@@ -1992,11 +1969,11 @@ a.contact__item:hover .contact__value {
     }
 
     .cursor-dot.is-clicking {
-        transform: translate(-50%, -50%) scale(0.6);
+        background: rgba(74, 74, 74, 0.28);
     }
 
     .cursor-ring.is-clicking {
-        transform: translate(-50%, -50%) scale(0.8);
+        opacity: 0.15;
     }
 
     body {

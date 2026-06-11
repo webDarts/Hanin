@@ -90,9 +90,9 @@
         const slides = [
             'BG/DSC06450.jpg',
             'BG/DSC06477.webp',
+            'BG/0W2A3930.jpg',
             'BG/DSC06511.webp',
             'BG/0W2A3803.jpg',
-            'BG/hero.jpg',
         ];
 
         const totalDuration = 25;
@@ -118,16 +118,41 @@
         const nav = $('#nav');
         if (!toggle || !navLinks || !nav) return;
 
+        const mobileNavQuery = window.matchMedia('(max-width: 768px)');
+        const syncNavAccessibility = () => {
+            const shouldHide = mobileNavQuery.matches && !navLinks.classList.contains('nav__links--open');
+
+            if (mobileNavQuery.matches) {
+                navLinks.toggleAttribute('aria-hidden', shouldHide);
+                if ('inert' in navLinks) {
+                    navLinks.inert = shouldHide;
+                } else {
+                    $$('a, button', navLinks).forEach((link) => {
+                        shouldHide ? link.setAttribute('tabindex', '-1') : link.removeAttribute('tabindex');
+                    });
+                }
+            } else {
+                navLinks.removeAttribute('aria-hidden');
+                if ('inert' in navLinks) {
+                    navLinks.inert = false;
+                } else {
+                    $$('a, button', navLinks).forEach((link) => link.removeAttribute('tabindex'));
+                }
+            }
+        };
+
         const closeMenu = () => {
             navLinks.classList.remove('nav__links--open');
             toggle.setAttribute('aria-expanded', 'false');
             document.body.classList.remove('nav-open');
+            syncNavAccessibility();
         };
 
         const openMenu = () => {
             navLinks.classList.add('nav__links--open');
             toggle.setAttribute('aria-expanded', 'true');
             document.body.classList.add('nav-open');
+            syncNavAccessibility();
         };
 
         toggle.addEventListener('click', () => {
@@ -146,12 +171,13 @@
             }
         });
 
+        mobileNavQuery.addEventListener ? mobileNavQuery.addEventListener('change', syncNavAccessibility) : mobileNavQuery.addListener(syncNavAccessibility);
+        syncNavAccessibility();
+
         // Add shadow on scroll
-        let lastScroll = 0;
         const onScroll = () => {
             const y = window.scrollY;
             nav.classList.toggle('scrolled', y > 50);
-            lastScroll = y;
         };
         window.addEventListener('scroll', onScroll, { passive: true });
         onScroll();
@@ -222,6 +248,11 @@
             sections.forEach(({ link }) => {
                 const isMatch = link.getAttribute('href') === '#' + id;
                 link.classList.toggle('is-active', isMatch);
+                if (isMatch) {
+                    link.setAttribute('aria-current', 'location');
+                } else {
+                    link.removeAttribute('aria-current');
+                }
             });
         };
 
@@ -354,18 +385,45 @@
             });
         };
 
-        chips.forEach((chip) => {
-            chip.addEventListener('click', () => {
-                const filter = chip.dataset.filter;
-                if (!filter) return;
+        const activateChip = (chip) => {
+            const filter = chip.dataset.filter;
+            if (!filter) return;
 
-                chips.forEach((c) => {
-                    const active = c === chip;
-                    c.classList.toggle('is-active', active);
-                    c.setAttribute('aria-pressed', String(active));
-                });
+            chips.forEach((c) => {
+                const active = c === chip;
+                c.classList.toggle('is-active', active);
+                c.setAttribute('aria-pressed', String(active));
+            });
 
-                applyFilter(filter);
+            applyFilter(filter);
+            chip.focus();
+        };
+
+        chips.forEach((chip, index) => {
+            chip.addEventListener('click', () => activateChip(chip));
+
+            chip.addEventListener('keydown', (e) => {
+                const keyMap = {
+                    ArrowRight: 1,
+                    ArrowDown: 1,
+                    ArrowLeft: -1,
+                    ArrowUp: -1,
+                    Home: 'home',
+                    End: 'end'
+                };
+                const direction = keyMap[e.key];
+                if (direction === undefined) return;
+
+                e.preventDefault();
+                let nextIndex = index;
+                if (direction === 'home') {
+                    nextIndex = 0;
+                } else if (direction === 'end') {
+                    nextIndex = chips.length - 1;
+                } else {
+                    nextIndex = (index + direction + chips.length) % chips.length;
+                }
+                activateChip(chips[nextIndex]);
             });
         });
 
@@ -383,38 +441,45 @@
         const counterEl = $('#lightboxCounter');
         if (!lightbox || !imageEl) return;
 
-        // Build a global gallery: every project-card gallery on the page.
-        // Use data-full-src if available, otherwise fall back to currentSrc/src.
-        // Track by index to handle duplicate src values.
-        const allItems = $$('[data-gallery] img').map((img) => ({
-            src: img.getAttribute('data-full-src') || img.currentSrc || img.src,
-            alt: img.alt || '',
-            _el: img
-        }));
-
-        if (allItems.length === 0) return;
-
+        let currentGalleryItems = [];
         let currentIndex = 0;
         let lastFocused = null;
 
+        const getGalleryItems = (img) => {
+            const gallery = img.closest('[data-gallery]');
+            if (!gallery) return [];
+
+            return $$('img', gallery).map((item) => ({
+                src: item.getAttribute('data-full-src') || item.currentSrc || item.src,
+                alt: item.alt || '',
+                _el: item
+            }));
+        };
+
+        const getFocusable = () => Array.from(lightbox.querySelectorAll(
+            'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )).filter((el) => el.offsetParent !== null || el === document.activeElement);
+
         const render = () => {
-            const item = allItems[currentIndex];
+            const item = currentGalleryItems[currentIndex];
             if (!item) return;
             imageEl.src = item.src;
             imageEl.alt = item.alt;
             captionEl.textContent = item.alt;
-            if (counterEl) counterEl.textContent = (currentIndex + 1) + ' / ' + allItems.length;
+            if (counterEl) counterEl.textContent = (currentIndex + 1) + ' / ' + currentGalleryItems.length;
         };
 
-        const open = (index, triggerEl) => {
+        const open = (index, triggerEl, items) => {
+            currentGalleryItems = items || getGalleryItems(triggerEl);
+            if (currentGalleryItems.length === 0) return;
+
             currentIndex = index;
             render();
             lightbox.hidden = false;
             lastFocused = triggerEl || document.activeElement;
             document.body.style.overflow = 'hidden';
-            // Defer focus to next frame so the element is visible
             requestAnimationFrame(() => {
-                const closeBtn = lightbox.querySelector('[data-lightbox-close]');
+                const closeBtn = lightbox.querySelector('button[data-lightbox-close]');
                 if (closeBtn) closeBtn.focus();
             });
         };
@@ -422,33 +487,49 @@
         const close = () => {
             lightbox.hidden = true;
             imageEl.src = '';
+            currentGalleryItems = [];
             document.body.style.overflow = '';
-            if (lastFocused && typeof lastFocused.focus === 'function') {
+            if (lastFocused && typeof lastFocused.focus === 'function' && lastFocused.isConnected) {
                 lastFocused.focus();
             }
         };
 
         const next = () => {
-            currentIndex = (currentIndex + 1) % allItems.length;
+            if (currentGalleryItems.length === 0) return;
+            currentIndex = (currentIndex + 1) % currentGalleryItems.length;
             render();
         };
 
         const prev = () => {
-            currentIndex = (currentIndex - 1 + allItems.length) % allItems.length;
+            if (currentGalleryItems.length === 0) return;
+            currentIndex = (currentIndex - 1 + currentGalleryItems.length) % currentGalleryItems.length;
             render();
         };
 
-        // Wire up triggers — use index directly to handle duplicate src values
-        const galleryImgs = $$('[data-gallery] img');
-        galleryImgs.forEach((img, idx) => {
-            img.setAttribute('tabindex', '0');
-            img.setAttribute('role', 'button');
-            img.setAttribute('aria-label', 'View image: ' + (img.alt || 'project image'));
+        const trapFocus = (e) => {
+            const focusable = getFocusable();
+            if (focusable.length === 0) {
+                e.preventDefault();
+                return;
+            }
 
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+
+            if (e.shiftKey && document.activeElement === first) {
+                e.preventDefault();
+                last.focus();
+            } else if (!e.shiftKey && document.activeElement === last) {
+                e.preventDefault();
+                first.focus();
+            }
+        };
+
+        $$('[data-gallery] img').forEach((img) => {
             const handler = () => {
-                // Match by element reference, not src string
-                const index = allItems.findIndex((i) => i._el === img);
-                if (index >= 0) open(index, img);
+                const items = getGalleryItems(img);
+                const index = items.findIndex((item) => item._el === img);
+                if (index >= 0) open(index, img, items);
             };
 
             img.addEventListener('click', handler);
@@ -460,7 +541,6 @@
             });
         });
 
-        // Controls
         lightbox.addEventListener('click', (e) => {
             const target = e.target.closest('[data-lightbox-close]');
             if (target) close();
@@ -469,7 +549,6 @@
         $$('[data-lightbox-prev]', lightbox).forEach((btn) => btn.addEventListener('click', prev));
         $$('[data-lightbox-next]', lightbox).forEach((btn) => btn.addEventListener('click', next));
 
-        // Keyboard
         document.addEventListener('keydown', (e) => {
             if (lightbox.hidden) return;
             switch (e.key) {
@@ -485,10 +564,12 @@
                     e.preventDefault();
                     prev();
                     break;
+                case 'Tab':
+                    trapFocus(e);
+                    break;
             }
         });
 
-        // Touch swipe
         let touchStartX = 0;
         let touchStartY = 0;
         lightbox.addEventListener('touchstart', (e) => {
@@ -504,6 +585,28 @@
                 else prev();
             }
         }, { passive: true });
+    });
+
+    /* ------------------------------------------------
+       Project image grids
+       ------------------------------------------------ */
+
+    onReady(() => {
+        $$('[data-gallery]').forEach((gallery, galleryIndex) => {
+            const projectTitle = gallery.closest('.project-card')?.querySelector('.project-card__title')?.textContent?.trim() || `Project ${galleryIndex + 1}`;
+            gallery.setAttribute('role', 'region');
+            gallery.setAttribute('aria-label', `${projectTitle} image gallery`);
+
+            $$('picture, img', gallery).forEach((slide) => {
+                slide.removeAttribute('aria-hidden');
+                const img = slide.querySelector('img');
+                if (img) {
+                    img.setAttribute('tabindex', '0');
+                    img.setAttribute('role', 'button');
+                    img.setAttribute('aria-label', 'View image: ' + (img.alt || `${projectTitle} image`));
+                }
+            });
+        });
     });
 
     /* ------------------------------------------------
@@ -594,23 +697,42 @@
         let mouseY = -100;
         let ringX = -100;
         let ringY = -100;
+        let rafId = null;
+        let lastMoveAt = 0;
+
+        const setCursorPoint = () => {
+            const dotScale = dot.classList.contains('is-clicking') ? 0.6 : 1;
+            dot.style.transform = `translate(${mouseX - 4}px, ${mouseY - 4}px) scale(${dotScale})`;
+        };
+
+        function animateRing() {
+            const dx = mouseX - ringX;
+            const dy = mouseY - ringY;
+            ringX += dx * 0.15;
+            ringY += dy * 0.15;
+
+            if (Math.abs(dx) > 0.1 || Math.abs(dy) > 0.1 || performance.now() - lastMoveAt < 250) {
+                const ringScale = ring.classList.contains('is-clicking') ? 0.8 : 1;
+                ring.style.transform = `translate(${ringX - 20}px, ${ringY - 20}px) scale(${ringScale})`;
+            }
+
+            if (performance.now() - lastMoveAt < 250) {
+                rafId = requestAnimationFrame(animateRing);
+            } else {
+                rafId = null;
+            }
+        }
 
         document.addEventListener('mousemove', (e) => {
             mouseX = e.clientX;
             mouseY = e.clientY;
-            dot.style.left = mouseX + 'px';
-            dot.style.top = mouseY + 'px';
-        });
+            lastMoveAt = performance.now();
+            setCursorPoint();
 
-        // Smooth ring follow
-        const animateRing = () => {
-            ringX += (mouseX - ringX) * 0.15;
-            ringY += (mouseY - ringY) * 0.15;
-            ring.style.left = ringX + 'px';
-            ring.style.top = ringY + 'px';
-            requestAnimationFrame(animateRing);
-        };
-        requestAnimationFrame(animateRing);
+            if (!rafId) {
+                rafId = requestAnimationFrame(animateRing);
+            }
+        });
 
         // Hover state on interactive elements
         const hoverTargets = 'a, button, [role="button"], .filter-chip, .project-card__details summary, .project-card__gallery img, .nav__toggle, .lightbox__btn, .contact__item';
@@ -633,11 +755,13 @@
         document.addEventListener('mousedown', () => {
             dot.classList.add('is-clicking');
             ring.classList.add('is-clicking');
+            setCursorPoint();
         });
 
         document.addEventListener('mouseup', () => {
             dot.classList.remove('is-clicking');
             ring.classList.remove('is-clicking');
+            setCursorPoint();
         });
     });
 
