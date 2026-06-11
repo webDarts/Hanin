@@ -141,10 +141,13 @@
             }
         };
 
+        const backdrop = $('#navBackdrop');
+
         const closeMenu = () => {
             navLinks.classList.remove('nav__links--open');
             toggle.setAttribute('aria-expanded', 'false');
             document.body.classList.remove('nav-open');
+            if (backdrop) backdrop.classList.remove('is-visible');
             syncNavAccessibility();
         };
 
@@ -152,6 +155,7 @@
             navLinks.classList.add('nav__links--open');
             toggle.setAttribute('aria-expanded', 'true');
             document.body.classList.add('nav-open');
+            if (backdrop) backdrop.classList.add('is-visible');
             syncNavAccessibility();
         };
 
@@ -170,6 +174,30 @@
                 toggle.focus();
             }
         });
+
+        // Close menu when clicking backdrop or outside on mobile
+        if (backdrop) {
+            backdrop.addEventListener('click', closeMenu);
+        }
+
+        document.addEventListener('click', (e) => {
+            if (!navLinks.classList.contains('nav__links--open')) return;
+            if (toggle.contains(e.target)) return;
+            if (navLinks.contains(e.target)) return;
+            if (backdrop && backdrop.contains(e.target)) return;
+            closeMenu();
+        });
+
+        // Close menu on swipe left (mobile gesture)
+        let touchStartX = 0;
+        navLinks.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].clientX;
+        }, { passive: true });
+
+        navLinks.addEventListener('touchend', (e) => {
+            const dx = e.changedTouches[0].clientX - touchStartX;
+            if (dx < -50) closeMenu(); // swipe left to close
+        }, { passive: true });
 
         mobileNavQuery.addEventListener ? mobileNavQuery.addEventListener('change', syncNavAccessibility) : mobileNavQuery.addListener(syncNavAccessibility);
         syncNavAccessibility();
@@ -326,6 +354,14 @@
                 if (!target) return;
 
                 e.preventDefault();
+
+                // Close mobile menu if open
+                document.body.classList.remove('nav-open');
+                const navToggle = $('#navToggle');
+                const navLinks = $('#navLinks');
+                if (navToggle) navToggle.setAttribute('aria-expanded', 'false');
+                if (navLinks) navLinks.classList.remove('nav__links--open');
+
                 target.scrollIntoView({
                     behavior: prefersReducedMotion ? 'auto' : 'smooth',
                     block: 'start'
@@ -572,14 +608,25 @@
 
         let touchStartX = 0;
         let touchStartY = 0;
+        let touchStartTime = 0;
         lightbox.addEventListener('touchstart', (e) => {
             touchStartX = e.changedTouches[0].clientX;
             touchStartY = e.changedTouches[0].clientY;
+            touchStartTime = Date.now();
         }, { passive: true });
 
         lightbox.addEventListener('touchend', (e) => {
             const dx = e.changedTouches[0].clientX - touchStartX;
             const dy = e.changedTouches[0].clientY - touchStartY;
+            const elapsed = Date.now() - touchStartTime;
+
+            // Swipe down to close (mobile-friendly)
+            if (dy > 80 && elapsed < 500 && Math.abs(dy) > Math.abs(dx)) {
+                close();
+                return;
+            }
+
+            // Horizontal swipe for navigation
             if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
                 if (dx < 0) next();
                 else prev();
